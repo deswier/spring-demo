@@ -1,30 +1,53 @@
 package com.example.demo.student;
 
-import java.time.LocalDate;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
+import java.time.LocalDate;
+import java.time.Period;
+
+// map the class Student to the table
+@Entity // for Hibernate
+@Table // for table in DB
 public class Student {
+    //start PK
+    @Id
+    @SequenceGenerator(
+            name =  "student_sequence",
+            sequenceName =  "student_sequence",
+            allocationSize = 1)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "student_sequence")
     private Long id;
+    //end PK
+
     private String name;
     private String email;
     private LocalDate dob;
+
+    @Transient
     private Integer age;
 
     public Student() {
     }
 
-    public Student(Long id, String name, String email, LocalDate dob, Integer age) {
+    public Student(Long id, String name, String email, LocalDate dob) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.dob = dob;
-        this.age = age;
     }
 
-    public Student(String name, String email, LocalDate dob, Integer age) {
+    public Student(String name, String email, LocalDate dob) {
         this.name = name;
         this.email = email;
         this.dob = dob;
-        this.age = age;
     }
 
     public Long getId() {
@@ -44,7 +67,15 @@ public class Student {
     }
 
     public Integer getAge() {
-        return age;
+        return Period.between(dob, LocalDate.now()).getYears();
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
