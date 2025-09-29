@@ -10,7 +10,7 @@ import java.util.List;
 public class StudentController {
 
     @GetMapping("/api/v1/student")
-    public List<Student> get() {
+    public List<Student> getStudents() {
         return List.of(new Student(1L, "Alina", "alina@bk.ru", LocalDate.now(), 0));
     }
 
