@@ -13,9 +13,9 @@ import static java.time.Month.JANUARY;
 public class StudentConfig {
 
     @Bean
-    CommandLineRunner commandLineRunner (StudentRepository studentRepository) {
+    CommandLineRunner commandLineRunner(StudentRepository studentRepository) {
         return args -> {
-            Student max = new Student( "Max", "max@gmail.com", LocalDate.of(1970, JANUARY, 1));
+            Student max = new Student("Max", "max@gmail.com", LocalDate.of(1970, JANUARY, 1));
             Student ann = new Student("Ann", "ann@gmail.com", LocalDate.of(1980, JANUARY, 1));
 
             studentRepository.saveAll(List.of(max, ann));

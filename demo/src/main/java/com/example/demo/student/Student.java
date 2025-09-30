@@ -18,8 +18,8 @@ public class Student {
     //start PK
     @Id
     @SequenceGenerator(
-            name =  "student_sequence",
-            sequenceName =  "student_sequence",
+            name = "student_sequence",
+            sequenceName = "student_sequence",
             allocationSize = 1)
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -58,8 +58,16 @@ public class Student {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public LocalDate getDob() {
@@ -68,14 +76,6 @@ public class Student {
 
     public Integer getAge() {
         return Period.between(dob, LocalDate.now()).getYears();
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     @Override
