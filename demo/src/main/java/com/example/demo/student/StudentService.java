@@ -1,6 +1,7 @@
 package com.example.demo.student;
 
 import com.example.demo.exception.StudentValidateException;
+import com.example.demo.student.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,10 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
+    public void addNewStudent(StudentDTO student) throws StudentValidateException {
+        addNewStudent(new Student(student.getId(), student.getName(), student.getEmail(), student.getDob()));
+    }
+
     public void addNewStudent(Student student) throws StudentValidateException {
         validateStudent(student);
 
@@ -39,7 +44,7 @@ public class StudentService {
 
 
     @Transactional
-    public void updateStudent(Long id, String name, String email, LocalDate dob) throws StudentValidateException{
+    public void updateStudent(Long id, String name, String email, LocalDate dob) throws StudentValidateException {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentValidateException("Student with id: " + id + " does not exist"));
 
@@ -55,29 +60,21 @@ public class StudentService {
         }
 
         if (newEmail != null && !newEmail.isEmpty() && !newEmail.equals(student.getEmail())) {
-            Optional<Student>  studentByEmail = studentRepository.findByEmail(newEmail);
-
-            if (studentByEmail.isPresent() && !studentByEmail.get().getId().equals(student.getId())) {
-                throw new StudentValidateException("Student with email: " + newEmail + " already exists");
-            }
+            validateStudentByEmail(newEmail);
 
             student.setEmail(newEmail);
         }
     }
 
-    private void validateStudent(Student student) throws StudentValidateException {
-        if (student.getEmail() == null || student.getEmail().isEmpty()) {
-            throw new StudentValidateException("Email can't be empty!");
-        }
-
-        if (student.getName() == null || student.getName().isEmpty()) {
-            throw new StudentValidateException("Name can't be empty!");
-        }
-
-        Optional<Student> studentByEmail = studentRepository.findByEmail(student.getEmail());
+    private void validateStudentByEmail(String email) throws StudentValidateException {
+        Optional<Student> studentByEmail = studentRepository.findByEmail(email);
 
         if (studentByEmail.isPresent()) {
-            throw new StudentValidateException("Student with email: " + student.getEmail() + " already exists!");
+            throw new StudentValidateException("Student with email: " + email + " already exists!");
         }
+    }
+
+    private void validateStudent(Student student) throws StudentValidateException {
+        validateStudentByEmail(student.getEmail());
     }
 }

@@ -1,20 +1,21 @@
 package com.example.demo.exception;
 
-public class StudentValidateException extends Exception {
+import java.util.List;
 
-    public StudentValidateException() {
+public class StudentValidateException extends RuntimeException {
+
+    public StudentValidateException(String message) {
+        super(message);
+        this.fields = null;
     }
 
-    public StudentValidateException(String msg) {
-        super(msg);
+    public StudentValidateException(String message, List<ViolationFieldError> fields) {
+        super(message);
+        this.fields = fields;
     }
 
-    public StudentValidateException(String msg, Throwable throwable) {
-        super(msg, throwable);
-    }
+    public List<ViolationFieldError> getFields() { return fields; }
 
-    public StudentValidateException(Throwable throwable) {
-        super(throwable);
-    }
+    private final List<ViolationFieldError> fields;
 
 }

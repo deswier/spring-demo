@@ -79,7 +79,7 @@ public class Student {
     }
 
     public Integer getAge() {
-        return Period.between(dob, LocalDate.now()).getYears();
+        return dob == null ? null : Period.between(dob, LocalDate.now()).getYears();
     }
 
     @Override

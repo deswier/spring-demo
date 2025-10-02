@@ -3,30 +3,21 @@ package com.example.demo.exception;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiException {
-
-    private final String message;
     private final int status;
-    private final ZonedDateTime zonedDateTime;
+    private final String error;
+    private final String message;
+    private final String path;
+    private final OffsetDateTime timestamp = OffsetDateTime.now();
+    private final List<ViolationFieldError> fields;
 
-    public ApiException(String message, HttpStatus status, ZonedDateTime zonedDateTime) {
-        this.message = message;
-        this.status = status.value();
-        this.zonedDateTime = zonedDateTime;
+    public ApiException(int status, String error, String message, String path, List<ViolationFieldError> fields) {
+        this.status = status; this.error = error; this.message = message; this.path = path; this.fields = fields;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public ZonedDateTime getZonedDateTime() {
-        return zonedDateTime;
-    }
 }
