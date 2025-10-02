@@ -1,4 +1,4 @@
-package com.example.demo.message;
+package com.example.demo.controller;
 
 import com.example.demo.config.ExposedResourceMessageBundleSource;
 import org.springframework.web.bind.annotation.GetMapping;

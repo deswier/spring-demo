@@ -1,7 +1,9 @@
-package com.example.demo.student;
+package com.example.demo.service;
 
 import com.example.demo.exception.StudentValidateException;
-import com.example.demo.student.dto.StudentDTO;
+import com.example.demo.dto.StudentDTO;
+import com.example.demo.model.Student;
+import com.example.demo.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;

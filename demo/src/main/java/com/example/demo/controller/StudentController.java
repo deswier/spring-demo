@@ -1,7 +1,9 @@
-package com.example.demo.student;
+package com.example.demo.controller;
 
 import com.example.demo.exception.StudentValidateException;
-import com.example.demo.student.dto.StudentDTO;
+import com.example.demo.model.Student;
+import com.example.demo.service.StudentService;
+import com.example.demo.dto.StudentDTO;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
