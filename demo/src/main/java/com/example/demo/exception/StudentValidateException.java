@@ -1,9 +1,10 @@
 package com.example.demo.exception;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class StudentValidateException extends RuntimeException {
+
+    private final List<ViolationFieldError> fields;
 
     public StudentValidateException(String message) {
         super(message);
@@ -23,8 +24,8 @@ public class StudentValidateException extends RuntimeException {
         this.fields = List.of(fieldError);
     }
 
-    public List<ViolationFieldError> getFields() { return fields; }
-
-    private final List<ViolationFieldError> fields;
+    public List<ViolationFieldError> getFields() {
+        return fields;
+    }
 
 }

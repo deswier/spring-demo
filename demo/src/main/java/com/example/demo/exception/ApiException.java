@@ -1,11 +1,9 @@
 package com.example.demo.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.http.HttpStatus;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiException {
@@ -17,14 +15,35 @@ public class ApiException {
     private final List<ViolationFieldError> fields;
 
     public ApiException(int status, String error, String message, String path, List<ViolationFieldError> fields) {
-        this.status = status; this.error = error; this.message = message; this.path = path; this.fields = fields;
+        this.status = status;
+        this.error = error;
+        this.message = message;
+        this.path = path;
+        this.fields = fields;
     }
 
-    public int getStatus() { return status; }
-    public String getError() { return error; }
-    public String getMessage() { return message; }
-    public String getPath() { return path; }
-    public OffsetDateTime getTimestamp() { return timestamp; }
-    public List<ViolationFieldError> getFields() { return fields; }
+    public int getStatus() {
+        return status;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public OffsetDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public List<ViolationFieldError> getFields() {
+        return fields;
+    }
 
 }

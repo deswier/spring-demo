@@ -70,12 +70,12 @@ public class Student {
         this.email = email;
     }
 
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
-    }
-
     public LocalDate getDob() {
         return dob;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
     }
 
     public Integer getAge() {
