@@ -1,8 +1,8 @@
-
 const App = () => {
     const [students, setStudents] = React.useState([]);
     const [name, setName] = React.useState('');
     const [email, setEmail] = React.useState('');
+    const [dob, setDob] = React.useState('');
     const [editingStudent, setEditingStudent] = React.useState(null);
 
     React.useEffect(() => {
@@ -17,7 +17,7 @@ const App = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ name, email, dob: '1990-01-01' }),
+            body: JSON.stringify({ name, email, dob }),
         })
             .then(() => {
                 fetch('/api/v1/registration/students')
@@ -25,6 +25,7 @@ const App = () => {
                     .then(data => setStudents(data));
                 setName('');
                 setEmail('');
+                setDob('');
             });
     };
 
@@ -38,6 +39,7 @@ const App = () => {
                     .then(data => setStudents(data));
                 setName('');
                 setEmail('');
+                setDob('');
                 setEditingStudent(null);
             });
     };
@@ -57,6 +59,7 @@ const App = () => {
         setEditingStudent(student.id);
         setName(student.name);
         setEmail(student.email);
+        setDob(student.dob);
     };
 
     return (
@@ -65,6 +68,7 @@ const App = () => {
             <div>
                 <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
                 <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input type="date" placeholder="Date of Birth" value={dob} onChange={(e) => setDob(e.target.value)} />
                 {editingStudent ? (
                     <button onClick={() => handleUpdate(editingStudent)}>Update Student</button>
                 ) : (
@@ -76,6 +80,7 @@ const App = () => {
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>DOB</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -84,6 +89,7 @@ const App = () => {
                     <tr key={student.id}>
                         <td>{student.name}</td>
                         <td>{student.email}</td>
+                        <td>{student.dob}</td>
                         <td>
                             <button onClick={() => handleEdit(student)}>Edit</button>
                             <button onClick={() => handleDelete(student.id)}>Delete</button>

@@ -1,5 +1,7 @@
 package com.example.demo.student;
 
+import com.example.demo.exception.StudentValidateException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -29,21 +32,23 @@ public class StudentController {
     }
 
     @PostMapping
-    public void registerNewStudent(@RequestBody Student student) {
+    public void registerNewStudent(@RequestBody Student student) throws StudentValidateException {
         studentService.addNewStudent(student);
     }
 
     // example: http://localhost:8080/api/v1/registration/1
     @DeleteMapping(path = "{studentId}")
-    public void deleteStudent(@PathVariable("studentId") Long id) {
+    public void deleteStudent(@PathVariable("studentId") Long id) throws StudentValidateException{
         studentService.deleteStudent(id);
     }
 
-    // example: http://localhost:8080/api/v1/registration/1?name=max1&email=max1@email.com
+    // example: http://localhost:8080/api/v1/registration/1?name=max1&email=max1@email.com&dob=2000-01-01
     @PutMapping(path = "{studentId}")
     public void updateStudent(@PathVariable("studentId") Long id,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String email) {
-        studentService.updateStudent(id, name, email);
+                            @RequestParam(required = false) String name,
+                            @RequestParam(required = false) String email,
+                            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dob)
+            throws StudentValidateException {
+        studentService.updateStudent(id, name, email, dob);
     }
 }
