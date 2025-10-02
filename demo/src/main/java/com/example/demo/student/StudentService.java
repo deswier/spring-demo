@@ -3,6 +3,8 @@ package com.example.demo.student;
 import com.example.demo.exception.StudentValidateException;
 import com.example.demo.student.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,10 @@ public class StudentService {
     @Autowired
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
+    }
+
+    public Page<Student> getStudents(int page, int pageSize) {
+        return studentRepository.findAll(PageRequest.of(page, pageSize));
     }
 
     public List<Student> getStudents() {
@@ -41,7 +47,6 @@ public class StudentService {
             throw new StudentValidateException("Student with id: " + id + " does not exist");
         }
     }
-
 
     @Transactional
     public void updateStudent(Long id, String name, String email, LocalDate dob) throws StudentValidateException {

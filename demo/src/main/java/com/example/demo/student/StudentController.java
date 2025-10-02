@@ -5,6 +5,7 @@ import com.example.demo.student.dto.StudentDTO;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/v1/registration")
@@ -34,8 +34,10 @@ public class StudentController {
 
     //example: http://localhost:8080/api/v1/registration/students
     @GetMapping("/students")
-    public List<Student> getStudents() {
-        return studentService.getStudents();
+    public Page<Student> getStudents(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {
+        return studentService.getStudents(page, pageSize);
     }
 
     @PostMapping

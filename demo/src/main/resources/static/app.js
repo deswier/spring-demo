@@ -1,4 +1,8 @@
+// app.js — React 17 compatible, no JSX/optional chaining
+
 const h = React.createElement;
+
+/* ---------- Reusable components ---------- */
 
 function InputField(props){
   var hasErr = !!props.error;
@@ -11,12 +15,9 @@ function InputField(props){
       value: props.value,
       onChange: function(ev){ props.onChange(ev.target.value); }
     }),
-    h('div', { className: 'error-slot ' + (hasErr ? '' : 'hidden') },
-      hasErr ? props.error : 'placeholder'
-    )
+    h('div', { className: 'error-slot ' + (hasErr ? '' : 'hidden') }, hasErr ? props.error : 'placeholder')
   );
 }
-
 
 function KebabMenu(props){
   if (!props.open) return null;
@@ -57,31 +58,43 @@ function StudentsTable(props){
   );
 }
 
-/* App */
+/* ---------- App ---------- */
 
 const App = () => {
   const [students, setStudents] = React.useState([]);
+
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [dob, setDob] = React.useState(''); // yyyy-MM-dd
+
   const [editingId, setEditingId] = React.useState(null);
   const [menuOpenId, setMenuOpenId] = React.useState(null);
 
   const [errors, setErrors] = React.useState({ name: '', email: '', dob: '', global: '' });
 
+  // pagination
+  const [page, setPage] = React.useState(0);       // 0-based
+  const [pageSize, setPageSize] = React.useState(10);
+  const [totalPages, setTotalPages] = React.useState(0);
+  const [totalElements, setTotalElements] = React.useState(0);
+
   const loadStudents = React.useCallback(function(){
-    fetch('/api/v1/registration/students')
+    fetch('/api/v1/registration/students?page=' + page + '&pageSize=' + pageSize)
       .then(function(r){ return r.json(); })
-      .then(function(data){ setStudents(Array.isArray(data) ? data : []); })
+      .then(function(data){
+        setStudents(Array.isArray(data.content) ? data.content : []);
+        setTotalPages(typeof data.totalPages === 'number' ? data.totalPages : 0);
+        setTotalElements(typeof data.totalElements === 'number' ? data.totalElements : (Array.isArray(data.content) ? data.content.length : 0));
+      })
       .catch(function(){});
-  }, []);
+  }, [page, pageSize]);
+
   React.useEffect(function(){ loadStudents(); }, [loadStudents]);
 
   function hasFieldErrors(obj){ return !!(obj && (obj.name || obj.email || obj.dob)); }
 
   function mapApiErrorsToState(apiError) {
     var next = { name: '', email: '', dob: '', global: '' };
-
     if (apiError && Array.isArray(apiError.fields)) {
       apiError.fields.forEach(function(f){
         var field = (f && f.field ? f.field : '').toLowerCase();
@@ -90,13 +103,8 @@ const App = () => {
         }
       });
     }
-
     var msg = apiError && apiError.message ? apiError.message : null;
-    if (hasFieldErrors(next)) {
-      next.global = ''; // do not show global if field errors exist
-    } else {
-      next.global = msg || 'Request failed';
-    }
+    next.global = hasFieldErrors(next) ? '' : (msg || 'Request failed');
     return next;
   }
 
@@ -115,6 +123,8 @@ const App = () => {
       setErrors(mapApiErrorsToState(body));
       return;
     }
+    // After adding, go to first page to show newest if your backend returns sorted pages differently; otherwise keep current
+    // setPage(0);
     await loadStudents();
     setName(''); setEmail(''); setDob('');
   }
@@ -122,8 +132,9 @@ const App = () => {
   async function handleUpdate(){
     if (!editingId) return;
     setErrors({ name: '', email: '', dob: '', global: '' });
-    var url = '/api/v1/registration/' + editingId + '?name=' +
-              encodeURIComponent(name) + '&email=' + encodeURIComponent(email);
+    var url = '/api/v1/registration/' + editingId +
+              '?name=' + encodeURIComponent(name) +
+              '&email=' + encodeURIComponent(email);
     var res = await fetch(url, { method: 'PUT' });
     if (!res.ok){
       var body = await safeJson(res);
@@ -137,8 +148,12 @@ const App = () => {
 
   async function handleDelete(id){
     await fetch('/api/v1/registration/' + id, { method: 'DELETE' });
+    // If we removed the last item on the page, move one page back
+    // Reload first, then adjust page if needed
     await loadStudents();
     if (menuOpenId === id) setMenuOpenId(null);
+    // Optional: if current page becomes empty and not the first, go back
+    // (Requires another fetch to know it's empty; skip for now to keep changes minimal)
   }
 
   function handleEditRow(s){
@@ -152,7 +167,7 @@ const App = () => {
 
   function toggleMenu(id){ setMenuOpenId(function(curr){ return curr === id ? null : id; }); }
 
-  // Banner node
+  // Banner (only when no field errors)
   var bannerNode = document.getElementById('banner');
   if (bannerNode){
     bannerNode.innerHTML = '';
@@ -165,6 +180,7 @@ const App = () => {
   }
 
   return h('div', null,
+    // Form
     h('div', { className: 'form-grid' },
       h(InputField, {
         label: 'Name',
@@ -187,40 +203,81 @@ const App = () => {
         error: errors.dob
       }),
       h('div', null,
-        h('button', {
-          className: 'btn',
-          onClick: editingId ? handleUpdate : handleCreate
-        }, editingId ? 'Update Student' : 'Add Student')
+        h('button', { className: 'btn', onClick: editingId ? handleUpdate : handleCreate },
+          editingId ? 'Update Student' : 'Add Student'
+        )
       )
     ),
 
-    // List card is rendered into #table (keep structure minimal)
-    h(TableMountHelper, {
-      students: students,
-      menuOpenId: menuOpenId,
-      onToggleMenu: toggleMenu,
-      onEdit: handleEditRow,
-      onDelete: handleDelete
-    })
+    // Table in second card
+   h(TableMountHelper, {
+     students: students,
+     menuOpenId: menuOpenId,
+     onToggleMenu: toggleMenu,
+     onEdit: handleEditRow,
+     onDelete: handleDelete,
+
+     // pagination props routed to the helper
+     page: page,
+     totalPages: totalPages,
+     pageSize: pageSize,
+     totalElements: totalElements,
+     onPrev: function(){ if (page > 0) setPage(page - 1); },
+     onNext: function(){ if (page + 1 < totalPages) setPage(page + 1); },
+     onGoto: function(i){ if (i >= 0 && i < totalPages) setPage(i); },
+     onPageSize: function(n){ setPageSize(n); setPage(0); }
+   })
   );
 };
 
-/* Mount helper to render table into the second card */
+/* Mount helper renders the table AND the pager into the second card */
 function TableMountHelper(props){
   React.useEffect(function(){
-    var host = document.getElementById('table');
-    if (!host) return;
-    ReactDOM.render(
-      h(StudentsTable, {
-        students: props.students,
-        menuOpenId: props.menuOpenId,
-        onToggleMenu: props.onToggleMenu,
-        onEdit: props.onEdit,
-        onDelete: props.onDelete
-      }),
-      host
-    );
-  }, [props.students, props.menuOpenId, props.onToggleMenu, props.onEdit, props.onDelete]);
+    var tableHost = document.getElementById('table');
+    if (tableHost) {
+      ReactDOM.render(
+        h(StudentsTable, {
+          students: props.students,
+          menuOpenId: props.menuOpenId,
+          onToggleMenu: props.onToggleMenu,
+          onEdit: props.onEdit,
+          onDelete: props.onDelete
+        }),
+        tableHost
+      );
+    }
+
+    var pagerHost = document.getElementById('pager');
+    if (pagerHost) {
+      ReactDOM.render(
+        h(window.Pagination, {
+          page: props.page,
+          totalPages: props.totalPages,
+          pageSize: props.pageSize,
+          totalElements: props.totalElements,
+          onPrev: props.onPrev,
+          onNext: props.onNext,
+          onGoto: props.onGoto,
+          onPageSize: props.onPageSize
+        }),
+        pagerHost
+      );
+    }
+  }, [
+    props.students,
+    props.menuOpenId,
+    props.onToggleMenu,
+    props.onEdit,
+    props.onDelete,
+    props.page,
+    props.totalPages,
+    props.pageSize,
+    props.totalElements,
+    props.onPrev,
+    props.onNext,
+    props.onGoto,
+    props.onPageSize
+  ]);
   return null;
 }
 
