@@ -26,16 +26,15 @@ public class ApiExceptionHandler {
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 "Validation failed",
                 req.getRequestURI(),
-                fields
-        );
+                fields);
+
         return ResponseEntity.badRequest().body(body);
     }
 
     @ExceptionHandler(StudentValidateException.class)
     public ResponseEntity<ApiException> handleStudentValidate(StudentValidateException ex,
             HttpServletRequest req) {
-        // У твоего исключения могут быть поля, а могут не быть — поддержим оба случая
-        List<ViolationFieldError> fields = ex.getFields(); // сделай геттер, может быть null
+        List<ViolationFieldError> fields = ex.getFields();
 
         ApiException body = new ApiException(
                 HttpStatus.BAD_REQUEST.value(),

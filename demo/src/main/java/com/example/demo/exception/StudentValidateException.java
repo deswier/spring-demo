@@ -1,5 +1,6 @@
 package com.example.demo.exception;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StudentValidateException extends RuntimeException {
@@ -12,6 +13,14 @@ public class StudentValidateException extends RuntimeException {
     public StudentValidateException(String message, List<ViolationFieldError> fields) {
         super(message);
         this.fields = fields;
+    }
+
+    public StudentValidateException(String message, String field) {
+        super(message);
+
+        ViolationFieldError fieldError = new ViolationFieldError(field, message);
+
+        this.fields = List.of(fieldError);
     }
 
     public List<ViolationFieldError> getFields() { return fields; }

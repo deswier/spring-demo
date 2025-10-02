@@ -20,4 +20,11 @@ public class ApiException {
         this.status = status; this.error = error; this.message = message; this.path = path; this.fields = fields;
     }
 
+    public int getStatus() { return status; }
+    public String getError() { return error; }
+    public String getMessage() { return message; }
+    public String getPath() { return path; }
+    public OffsetDateTime getTimestamp() { return timestamp; }
+    public List<ViolationFieldError> getFields() { return fields; }
+
 }

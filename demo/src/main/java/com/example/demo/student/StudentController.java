@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +41,7 @@ public class StudentController {
     @PostMapping
     public ResponseEntity<Void> registerNewStudent(@Valid @RequestBody StudentDTO student) {
         studentService.addNewStudent(student); // может кинуть StudentValidateException
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

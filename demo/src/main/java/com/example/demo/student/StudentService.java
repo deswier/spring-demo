@@ -70,7 +70,7 @@ public class StudentService {
         Optional<Student> studentByEmail = studentRepository.findByEmail(email);
 
         if (studentByEmail.isPresent()) {
-            throw new StudentValidateException("Student with email: " + email + " already exists!");
+            throw new StudentValidateException("!", "email");
         }
     }
 
