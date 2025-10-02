@@ -1,6 +1,8 @@
 package com.example.demo.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +14,12 @@ import java.util.List;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+    private final MessageSource messageSource;
+
+    public ApiExceptionHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiException> handleInvalid(MethodArgumentNotValidException ex,
             HttpServletRequest req) {
@@ -20,10 +28,12 @@ public class ApiExceptionHandler {
                 .map(fe -> new ViolationFieldError(fe.getField(), fe.getDefaultMessage()))
                 .toList();
 
+        String message = messageSource.getMessage("validation.failed", null, LocaleContextHolder.getLocale());
+
         ApiException body = new ApiException(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                "Validation failed",
+                message,
                 req.getRequestURI(),
                 fields);
 

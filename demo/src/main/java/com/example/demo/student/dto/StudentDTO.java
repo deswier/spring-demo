@@ -11,15 +11,15 @@ public class StudentDTO {
 
     private Long id;
 
-    @NotEmpty(message = "Name can't be empty!")
+    @NotEmpty(message = "{student.name.not.empty}")
     private String name;
 
-    @NotEmpty(message = "Email can't be empty!")
-    @Email(message = "Email should be valid!")
+    @NotEmpty(message = "{student.email.not.empty}")
+    @Email(message = "{student.email.invalid}")
     private String email;
 
-    @NotNull(message = "Date of birth is required")
-    @Past(message = "Date of birth must be in the past")
+    @NotNull(message = "{student.dob.not.null}")
+    @Past(message = "{student.dob.past}")
     private LocalDate dob;
 
     public StudentDTO() {

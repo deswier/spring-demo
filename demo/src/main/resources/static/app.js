@@ -1,5 +1,3 @@
-// app.js — React 17 compatible, no JSX/optional chaining
-
 const h = React.createElement;
 
 /* ---------- Reusable components ---------- */
@@ -22,8 +20,8 @@ function InputField(props){
 function KebabMenu(props){
   if (!props.open) return null;
   return h('div', { className: 'menu' },
-    h('button', { className: 'menu-item', onClick: props.onEdit }, 'Edit'),
-    h('button', { className: 'menu-item menu-danger', onClick: props.onDelete }, 'Delete')
+    h('button', { className: 'menu-item', onClick: props.onEdit }, props.t('student.table.menu.edit')),
+    h('button', { className: 'menu-item menu-danger', onClick: props.onDelete }, props.t('student.table.menu.delete'))
   );
 }
 
@@ -31,9 +29,9 @@ function StudentsTable(props){
   return h('table', null,
     h('thead', null,
       h('tr', null,
-        h('th', null, 'Name'),
-        h('th', null, 'Email'),
-        h('th', null, 'Date of Birth'),
+        h('th', null, props.t('student.table.header.name')),
+        h('th', null, props.t('student.table.header.email')),
+        h('th', null, props.t('student.table.header.dob')),
         h('th', { style: { width: '80px', textAlign: 'right' } }, '')
       )
     ),
@@ -49,7 +47,8 @@ function StudentsTable(props){
             h(KebabMenu, {
               open: open,
               onEdit: function(){ props.onEdit(s); },
-              onDelete: function(){ props.onDelete(s.id); }
+              onDelete: function(){ props.onDelete(s.id); },
+              t: props.t
             })
           )
         );
@@ -62,6 +61,7 @@ function StudentsTable(props){
 
 const App = () => {
   const [students, setStudents] = React.useState([]);
+  const [messages, setMessages] = React.useState({});
 
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -77,6 +77,19 @@ const App = () => {
   const [pageSize, setPageSize] = React.useState(10);
   const [totalPages, setTotalPages] = React.useState(0);
   const [totalElements, setTotalElements] = React.useState(0);
+
+  const lang = new URLSearchParams(window.location.search).get('lang') || 'ru';
+
+  React.useEffect(function(){
+    fetch('/api/v1/messages?lang=' + lang)
+      .then(function(r){ return r.json(); })
+      .then(setMessages)
+      .catch(function(){});
+  }, [lang]);
+
+  const t = React.useCallback(function(key){
+    return messages[key] || key;
+  }, [messages]);
 
   const loadStudents = React.useCallback(function(){
     fetch('/api/v1/registration/students?page=' + page + '&pageSize=' + pageSize)
@@ -99,12 +112,12 @@ const App = () => {
       apiError.fields.forEach(function(f){
         var field = (f && f.field ? f.field : '').toLowerCase();
         if (field && Object.prototype.hasOwnProperty.call(next, field)) {
-          next[field] = (f && f.message) ? f.message : 'Invalid value';
+          next[field] = (f && f.message) ? f.message : t('error.invalid.value');
         }
       });
     }
     var msg = apiError && apiError.message ? apiError.message : null;
-    next.global = hasFieldErrors(next) ? '' : (msg || 'Request failed');
+    next.global = hasFieldErrors(next) ? '' : (msg || t('error.request.failed'));
     return next;
   }
 
@@ -123,8 +136,6 @@ const App = () => {
       setErrors(mapApiErrorsToState(body));
       return;
     }
-    // After adding, go to first page to show newest if your backend returns sorted pages differently; otherwise keep current
-    // setPage(0);
     await loadStudents();
     setName(''); setEmail(''); setDob('');
   }
@@ -148,12 +159,8 @@ const App = () => {
 
   async function handleDelete(id){
     await fetch('/api/v1/registration/' + id, { method: 'DELETE' });
-    // If we removed the last item on the page, move one page back
-    // Reload first, then adjust page if needed
     await loadStudents();
     if (menuOpenId === id) setMenuOpenId(null);
-    // Optional: if current page becomes empty and not the first, go back
-    // (Requires another fetch to know it's empty; skip for now to keep changes minimal)
   }
 
   function handleEditRow(s){
@@ -183,20 +190,20 @@ const App = () => {
     // Form
     h('div', { className: 'form-grid' },
       h(InputField, {
-        label: 'Name',
+        label: t('student.form.label.name'),
         value: name,
         onChange: function(v){ setName(v); setErrors(function(p){ return Object.assign({}, p, { name: '' }); }); },
         error: errors.name
       }),
       h(InputField, {
-        label: 'Email',
+        label: t('student.form.label.email'),
         value: email,
         onChange: function(v){ setEmail(v); setErrors(function(p){ return Object.assign({}, p, { email: '' }); }); },
         type: 'email',
         error: errors.email
       }),
       h(InputField, {
-        label: 'Date of Birth',
+        label: t('student.form.label.dob'),
         value: dob,
         onChange: function(v){ setDob(v); setErrors(function(p){ return Object.assign({}, p, { dob: '' }); }); },
         type: 'date',
@@ -204,7 +211,7 @@ const App = () => {
       }),
       h('div', null,
         h('button', { className: 'btn', onClick: editingId ? handleUpdate : handleCreate },
-          editingId ? 'Update Student' : 'Add Student'
+          editingId ? t('student.form.button.update') : t('student.form.button.add')
         )
       )
     ),
@@ -216,6 +223,7 @@ const App = () => {
      onToggleMenu: toggleMenu,
      onEdit: handleEditRow,
      onDelete: handleDelete,
+     t: t,
 
      // pagination props routed to the helper
      page: page,
@@ -241,7 +249,8 @@ function TableMountHelper(props){
           menuOpenId: props.menuOpenId,
           onToggleMenu: props.onToggleMenu,
           onEdit: props.onEdit,
-          onDelete: props.onDelete
+          onDelete: props.onDelete,
+          t: props.t
         }),
         tableHost
       );
@@ -258,7 +267,8 @@ function TableMountHelper(props){
           onPrev: props.onPrev,
           onNext: props.onNext,
           onGoto: props.onGoto,
-          onPageSize: props.onPageSize
+          onPageSize: props.onPageSize,
+          t: props.t
         }),
         pagerHost
       );
@@ -276,9 +286,11 @@ function TableMountHelper(props){
     props.onPrev,
     props.onNext,
     props.onGoto,
-    props.onPageSize
+    props.onPageSize,
+    props.t
   ]);
   return null;
 }
 
 ReactDOM.render(h(App), document.getElementById('app'));
+''

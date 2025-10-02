@@ -3,6 +3,8 @@ package com.example.demo.student;
 import com.example.demo.exception.StudentValidateException;
 import com.example.demo.student.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -16,10 +18,12 @@ import java.util.Optional;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final MessageSource messageSource;
 
     @Autowired
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, MessageSource messageSource) {
         this.studentRepository = studentRepository;
+        this.messageSource = messageSource;
     }
 
     public Page<Student> getStudents(int page, int pageSize) {
@@ -44,14 +48,18 @@ public class StudentService {
         if (studentRepository.existsById(id)) {
             studentRepository.deleteById(id);
         } else {
-            throw new StudentValidateException("Student with id: " + id + " does not exist");
+            String message = messageSource.getMessage("student.not.found", new Object[]{id}, LocaleContextHolder.getLocale());
+            throw new StudentValidateException(message);
         }
     }
 
     @Transactional
     public void updateStudent(Long id, String name, String email, LocalDate dob) throws StudentValidateException {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new StudentValidateException("Student with id: " + id + " does not exist"));
+                .orElseThrow(() -> {
+                    String message = messageSource.getMessage("student.not.found", new Object[]{id}, LocaleContextHolder.getLocale());
+                    return new StudentValidateException(message);
+                });
 
         String newName = name != null ? name.trim() : null;
         String newEmail = email != null ? email.trim() : null;
@@ -75,7 +83,8 @@ public class StudentService {
         Optional<Student> studentByEmail = studentRepository.findByEmail(email);
 
         if (studentByEmail.isPresent()) {
-            throw new StudentValidateException("Student with email: " + email + " already exists!", "email");
+            String message = messageSource.getMessage("student.email.exists", new Object[]{email}, LocaleContextHolder.getLocale());
+            throw new StudentValidateException(message, "email");
         }
     }
 

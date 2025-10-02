@@ -7,7 +7,8 @@
     var page = props.page,
         totalPages = props.totalPages,
         pageSize = props.pageSize,
-        totalElements = props.totalElements;
+        totalElements = props.totalElements,
+        t = props.t;
 
     function startIndex(){ return totalElements === 0 ? 0 : page * pageSize + 1; }
     function endIndex(){ var end = (page + 1) * pageSize; return Math.min(end, totalElements); }
@@ -52,11 +53,11 @@
         value: pageSize,
         onChange: function(ev){ props.onPageSize(parseInt(ev.target.value, 10)); },
         style: { border: '1px solid var(--border)', borderRadius: '8px', padding: '6px 8px', background: '#fff', cursor: 'pointer' }
-      }, [5,10,20,50].map(function(n){ return h('option', { key: n, value: n }, n + ' items'); }))
+      }, [5,10,20,50].map(function(n){ return h('option', { key: n, value: n }, n + ' ' + t('pagination.entries')); }))
     );
 
     var middle = h('div', { style: { color: '#6b7280', fontSize: '14px', flex: 1 } },
-      'Showing ', startIndex(), ' to ', endIndex(), ' of ', totalElements, ' entries.'
+      t('pagination.showing'), ' ', startIndex(), ' ', t('pagination.to'), ' ', endIndex(), ' ', t('pagination.of'), ' ', totalElements, ' ', t('pagination.entries'), '.'
     );
 
     var right = h('div', { style: { display: 'flex', alignItems: 'center', gap: '6px' } },

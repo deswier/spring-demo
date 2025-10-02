@@ -42,7 +42,7 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Void> registerNewStudent(@Valid @RequestBody StudentDTO student) {
-        studentService.addNewStudent(student); // может кинуть StudentValidateException
+        studentService.addNewStudent(student);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
