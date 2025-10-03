@@ -22,7 +22,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final MessageSource messageSource;
 
-    @Autowired
+    // @Autowired - If a class has exactly one constructor, @Autowired is not required on it
     public StudentService(StudentRepository studentRepository, MessageSource messageSource) {
         this.studentRepository = studentRepository;
         this.messageSource = messageSource;
