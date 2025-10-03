@@ -16,7 +16,7 @@ import static com.example.demo.constant.LocaleKeys.LOCALE_RU;
 @Configuration
 public class MessageSourceConfig implements WebMvcConfigurer {
 
-    @Bean //
+    @Bean // https://github.com/deswier/spring-demo/blob/main/demo/learn/bean.md
     public LocaleResolver localeResolver() {
         SessionLocaleResolver localeResolver = new SessionLocaleResolver();
         localeResolver.setDefaultLocale(LOCALE_RU);
