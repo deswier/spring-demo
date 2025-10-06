@@ -92,7 +92,7 @@ const App = () => {
   }, [messages]);
 
   const loadStudents = React.useCallback(function(){
-    fetch('/api/v1/registration/students?page=' + page + '&pageSize=' + pageSize)
+    fetch('/api/v1/student/students?page=' + page + '&pageSize=' + pageSize)
       .then(function(r){ return r.json(); })
       .then(function(data){
         setStudents(Array.isArray(data.content) ? data.content : []);
@@ -126,7 +126,7 @@ const App = () => {
   async function handleCreate(){
     setErrors({ name: '', email: '', dob: '', global: '' });
     var payload = { name: name, email: email, dob: dob };
-    var res = await fetch('/api/v1/registration', {
+    var res = await fetch('/api/v1/student', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -143,7 +143,7 @@ const App = () => {
   async function handleUpdate(){
     if (!editingId) return;
     setErrors({ name: '', email: '', dob: '', global: '' });
-    var url = '/api/v1/registration/' + editingId +
+    var url = '/api/v1/student/' + editingId +
               '?name=' + encodeURIComponent(name) +
               '&email=' + encodeURIComponent(email);
     var res = await fetch(url, { method: 'PUT' });
@@ -158,7 +158,7 @@ const App = () => {
   }
 
   async function handleDelete(id){
-    await fetch('/api/v1/registration/' + id, { method: 'DELETE' });
+    await fetch('/api/v1/student/' + id, { method: 'DELETE' });
     await loadStudents();
     if (menuOpenId === id) setMenuOpenId(null);
   }
