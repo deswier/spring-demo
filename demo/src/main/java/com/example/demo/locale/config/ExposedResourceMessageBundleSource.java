@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.locale.config;
 
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 

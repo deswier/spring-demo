@@ -1,4 +1,4 @@
-package com.example.demo.constant;
+package com.example.demo.locale.constant;
 
 import java.util.Locale;
 

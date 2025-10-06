@@ -1,5 +1,6 @@
 package com.example.demo.exception;
 
+import com.example.demo.student.exception.StudentValidateException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;

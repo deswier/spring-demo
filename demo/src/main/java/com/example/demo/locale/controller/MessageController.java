@@ -1,6 +1,6 @@
-package com.example.demo.controller;
+package com.example.demo.locale.controller;
 
-import com.example.demo.config.ExposedResourceMessageBundleSource;
+import com.example.demo.locale.config.ExposedResourceMessageBundleSource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

@@ -1,4 +1,6 @@
-package com.example.demo.exception;
+package com.example.demo.student.exception;
+
+import com.example.demo.exception.ViolationFieldError;
 
 import java.util.List;
 

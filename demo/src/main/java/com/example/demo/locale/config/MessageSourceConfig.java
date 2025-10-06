@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.locale.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.nio.charset.StandardCharsets;
 
-import static com.example.demo.constant.LocaleKeys.LOCALE_RU;
+import static com.example.demo.locale.constant.LocaleKeys.LOCALE_RU;
 
 // https://medium.com/@AlexanderObregon/how-spring-boot-configures-internationalization-i18n-6440bd597edc
 @Configuration
