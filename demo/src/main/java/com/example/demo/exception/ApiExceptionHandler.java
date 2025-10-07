@@ -1,6 +1,7 @@
 package com.example.demo.exception;
 
 import com.example.demo.student.exception.StudentValidateException;
+import com.example.demo.user.exception.UserValidateException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -52,6 +53,18 @@ public class ApiExceptionHandler {
                 ex.getMessage(),
                 req.getRequestURI(),
                 fields);
+
+        return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(UserValidateException.class)
+    public ResponseEntity<ApiException> handleGlobalException(Exception ex,
+            HttpServletRequest req) {
+        ApiException body = new ApiException(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                req.getRequestURI());
 
         return ResponseEntity.badRequest().body(body);
     }

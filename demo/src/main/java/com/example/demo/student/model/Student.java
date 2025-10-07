@@ -7,11 +7,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.Period;
 
 // map the class Student to the table
+@Getter
+@Setter
 @Entity // for Hibernate
 @Table // for table in DB
 public class Student {
@@ -47,34 +51,6 @@ public class Student {
     public Student(String name, String email, LocalDate dob) {
         this.name = name;
         this.email = email;
-        this.dob = dob;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public LocalDate getDob() {
-        return dob;
-    }
-
-    public void setDob(LocalDate dob) {
         this.dob = dob;
     }
 

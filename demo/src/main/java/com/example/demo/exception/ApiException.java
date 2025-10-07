@@ -14,6 +14,14 @@ public class ApiException {
     private final OffsetDateTime timestamp = OffsetDateTime.now();
     private final List<ViolationFieldError> fields;
 
+    public ApiException(int status, String error, String message, String path) {
+        this.status = status;
+        this.error = error;
+        this.message = message;
+        this.path = path;
+        this.fields = null;
+    }
+
     public ApiException(int status, String error, String message, String path, List<ViolationFieldError> fields) {
         this.status = status;
         this.error = error;

@@ -1,0 +1,33 @@
+package com.example.demo.user.exception;
+
+import com.example.demo.exception.ViolationFieldError;
+
+import java.util.List;
+
+public class UserValidateException extends RuntimeException {
+
+    private final List<ViolationFieldError> fields;
+
+    public UserValidateException(String message) {
+        super(message);
+        this.fields = null;
+    }
+
+    public UserValidateException(String message, List<ViolationFieldError> fields) {
+        super(message);
+        this.fields = fields;
+    }
+
+    public UserValidateException(String message, String field) {
+        super(message);
+
+        ViolationFieldError fieldError = new ViolationFieldError(field, message);
+
+        this.fields = List.of(fieldError);
+    }
+
+    public List<ViolationFieldError> getFields() {
+        return fields;
+    }
+
+}

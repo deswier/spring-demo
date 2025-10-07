@@ -1,6 +1,7 @@
 package com.example.demo.user.dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -13,17 +14,17 @@ import lombok.ToString;
 @ToString
 public class UserDTO {
 
-    @NotNull
+    @NotEmpty
     private final String firstName;
 
-    @NotNull
+    @NotEmpty
     private final String lastName;
 
-    @Email
-    @NotNull
+    @NotEmpty(message = "{student.email.not.empty}")
+    @Email(message = "{student.email.invalid}")
     private final String email;
 
-    @NotNull
+    @NotEmpty
     private final String password;
 
 }
