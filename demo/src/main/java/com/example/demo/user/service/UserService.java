@@ -21,6 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor // instead of public UserService(UserRepository userRepository, ...)
 public class UserService implements UserDetailsService {
 
+    public final static int TOKEN_EXPIRES_MINUTE = 15;
     private final static String USER_NOT_FOUND_MSG = "User with email: %s not found";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -46,7 +47,7 @@ public class UserService implements UserDetailsService {
 
         String token = UUID.randomUUID().toString();
         ConfirmationToken confirmationToken =
-                new ConfirmationToken(token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15), user);
+                new ConfirmationToken(token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(TOKEN_EXPIRES_MINUTE), user);
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
