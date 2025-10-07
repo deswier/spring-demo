@@ -1,4 +1,4 @@
-package com.example.demo.registration.email;
+package com.example.demo.auth.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

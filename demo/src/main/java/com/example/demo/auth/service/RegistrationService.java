@@ -1,8 +1,8 @@
-package com.example.demo.registration.service;
+package com.example.demo.auth.service;
 
-import com.example.demo.registration.email.EmailSender;
-import com.example.demo.registration.token.model.ConfirmationToken;
-import com.example.demo.registration.token.service.ConfirmationTokenService;
+import com.example.demo.auth.email.EmailSender;
+import com.example.demo.auth.token.model.ConfirmationToken;
+import com.example.demo.auth.token.service.ConfirmationTokenService;
 import com.example.demo.user.dto.UserDTO;
 import com.example.demo.user.model.User;
 import com.example.demo.user.role.UserRole;

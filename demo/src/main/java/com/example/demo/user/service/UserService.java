@@ -1,7 +1,7 @@
 package com.example.demo.user.service;
 
-import com.example.demo.registration.token.model.ConfirmationToken;
-import com.example.demo.registration.token.service.ConfirmationTokenService;
+import com.example.demo.auth.token.model.ConfirmationToken;
+import com.example.demo.auth.token.service.ConfirmationTokenService;
 import com.example.demo.security.encoder.PasswordEncoder;
 import com.example.demo.user.exception.UserValidateException;
 import com.example.demo.user.model.User;
@@ -11,9 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,7 +37,7 @@ public class UserService implements UserDetailsService {
         boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
 
         if (userExists) {
-            throw new UserValidateException("User with email: " + user.getEmail() + " already exists");
+            throw new UserValidateException("user.email.exists", List.of(user.getEmail()));
         }
 
         String encodedPassword = passwordEncoder.bCryptPasswordEncoder().encode(user.getPassword());

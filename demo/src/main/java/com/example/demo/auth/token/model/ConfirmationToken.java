@@ -1,4 +1,4 @@
-package com.example.demo.registration.token.model;
+package com.example.demo.auth.token.model;
 
 import com.example.demo.user.model.User;
 import jakarta.persistence.Column;

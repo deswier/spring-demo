@@ -58,8 +58,24 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(UserValidateException.class)
-    public ResponseEntity<ApiException> handleGlobalException(Exception ex,
+    public ResponseEntity<ApiException> handleUserValidate(UserValidateException ex,
             HttpServletRequest req) {
+
+        String message = messageSource.getMessage(ex.getMessage(), ex.getArgs().toArray(), ex.getMessage(), LocaleContextHolder.getLocale());
+
+        ApiException body = new ApiException(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                message,
+                req.getRequestURI());
+
+        return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiException> handleGlobalEx(Exception ex,
+            HttpServletRequest req) {
+
         ApiException body = new ApiException(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),

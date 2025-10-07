@@ -1,6 +1,6 @@
-package com.example.demo.registration.token.repository;
+package com.example.demo.auth.token.repository;
 
-import com.example.demo.registration.token.model.ConfirmationToken;
+import com.example.demo.auth.token.model.ConfirmationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

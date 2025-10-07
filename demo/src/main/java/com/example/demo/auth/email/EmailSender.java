@@ -1,4 +1,4 @@
-package com.example.demo.registration.email;
+package com.example.demo.auth.email;
 
 public interface EmailSender {
 

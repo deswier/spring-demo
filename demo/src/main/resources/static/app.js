@@ -78,6 +78,9 @@ const App = () => {
   const [totalPages, setTotalPages] = React.useState(0);
   const [totalElements, setTotalElements] = React.useState(0);
 
+  // NEW: track if user is authorized; show Logout button when true
+  const [authorized, setAuthorized] = React.useState(false);
+
   const lang = new URLSearchParams(window.location.search).get('lang') || 'ru';
 
   React.useEffect(function(){
@@ -93,7 +96,14 @@ const App = () => {
 
   const loadStudents = React.useCallback(function(){
     fetch('/api/v1/student/students?page=' + page + '&pageSize=' + pageSize)
-      .then(function(r){ return r.json(); })
+      .then(async function(r){
+        if (r.status === 401) {
+          setAuthorized(false);
+          return { content: [], totalPages: 0, totalElements: 0 };
+        }
+        setAuthorized(true);
+        return r.json();
+      })
       .then(function(data){
         setStudents(Array.isArray(data.content) ? data.content : []);
         setTotalPages(typeof data.totalPages === 'number' ? data.totalPages : 0);
@@ -187,6 +197,29 @@ const App = () => {
   }
 
   return h('div', null,
+    // --- Logout button (top-right, only when authorized) ---
+    authorized && h('div', {
+      style: {
+        position: 'fixed',
+        top: 12,
+        right: 12,
+        zIndex: 1000
+      }
+    },
+      h('a', {
+        href: 'http://localhost:8080/logout',
+        style: {
+          display: 'inline-block',
+          padding: '8px 12px',
+          border: '1px solid #e5e7eb',
+          borderRadius: '10px',
+          background: '#ffffff',
+          textDecoration: 'none',
+          fontWeight: 600
+        }
+      }, t('auth.logout'))
+    ),
+
     // Form
     h('div', { className: 'form-grid' },
       h(InputField, {
@@ -293,4 +326,3 @@ function TableMountHelper(props){
 }
 
 ReactDOM.render(h(App), document.getElementById('app'));
-''

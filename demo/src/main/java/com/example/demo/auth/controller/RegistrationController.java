@@ -1,7 +1,7 @@
-package com.example.demo.registration.controller;
+package com.example.demo.auth.controller;
 
 
-import com.example.demo.registration.service.RegistrationService;
+import com.example.demo.auth.service.RegistrationService;
 import com.example.demo.user.dto.UserDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
